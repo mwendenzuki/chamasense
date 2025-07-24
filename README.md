@@ -18,13 +18,13 @@ ChamaSense is an intelligent web platform designed to simplify and empower commu
 
 ## 🛠️ Tech Stack
 
-Frontend: React 19.1, CSS Modules (replaced Tailwind), Vite, pnpm
+Frontend: React 19.1, CSS Modules, Vite, pnpm
 
 Backend: Flask (Python), joblib, pandas, scikit-learn
 
 AI/ML: Custom-trained models for risk_prediction and forecast_savings
 
-Deployment: [insert your deployment method if any]
+Deployment:
 
 ## 📂 Folder Structure
 
