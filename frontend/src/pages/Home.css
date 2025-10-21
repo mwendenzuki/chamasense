@@ -1,0 +1,36 @@
+.home {
+  padding: 1.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #007b55;
+  margin-bottom: 1rem;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  text-align: center;
+}
+
+.card h3 {
+  color: #333;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.card p {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #007b55;
+}

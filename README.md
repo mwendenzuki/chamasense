@@ -1,30 +1,37 @@
-# 📌 Project: ChamaSense – AI-Powered Group Savings Manager
+# 🌍 ChamaSense – AI-Powered Group Savings Manager
+
+[🔗 URL – ]()
+
+---
 
 ## 📖 Overview
 
-ChamaSense is an intelligent web platform designed to simplify and empower community savings groups (Chamas). It leverages AI to assess risk and forecast savings, offering insights for informed financial decisions.
+**ChamaSense** is an intelligent financial management platform built to empower community savings groups (_Chamas_).  
+It simplifies contribution tracking, risk assessment, and financial forecasting — using machine learning to provide actionable insights that help members grow their collective wealth smarter and faster.
+
+---
 
 ## 🚀 Features
 
-💰 Predict individual savings potential
+✅ **AI-Powered Forecasting** – Predict individual and group savings growth  
+✅ **Risk Assessment** – Evaluate loan repayment probability via ML models  
+✅ **Member Management** – Add, edit, and track contributions in real-time  
+✅ **Financial Reports Dashboard** – Visual insights for better decision-making  
+✅ **Secure Authentication** – JWT-based user login & registration  
+✅ **Responsive UI** – Clean and intuitive design for all devices
 
-📉 Assess loan repayment risk using machine learning
-
-🧠 AI-backed financial forecasting
-
-🧾 Reports dashboard for contributions and savings
-
-⚙️ Group settings management
+---
 
 ## 🛠️ Tech Stack
 
-Frontend: React 19.1, CSS Modules, Vite, pnpm
+| Layer          | Tools & Frameworks                   |
+| -------------- | ------------------------------------ |
+| **Frontend**   | React 19.1, Vite, pnpm, External CSS |
+| **Backend**    | Flask (Python), Flask-JWT-Extended   |
+| **AI/ML**      | scikit-learn, pandas, joblib         |
+| **Deployment** | Render (Backend + Frontend)          |
 
-Backend: Flask (Python), joblib, pandas, scikit-learn
-
-AI/ML: Custom-trained models for risk_prediction and forecast_savings
-
-Deployment:
+---
 
 ## 📂 Folder Structure
 
@@ -32,55 +39,70 @@ chamasense/
 ├── backend/
 │ ├── app.py
 │ ├── models/
-│ └── utils/
+│ ├── utils/
+│ ├── risk_model.joblib
+│ └── savings_model.joblib
 ├── frontend/
 │ ├── src/
 │ │ ├── pages/
 │ │ ├── components/
-│ │ └── styles/
 └── README.md
+
+---
 
 ## 🧪 Running Locally
 
-### Backend
+### 🖥 Backend Setup
 
+```bash
 cd backend
-source venv/bin/activate # or use `.\venv\Scripts\activate` on Windows
+python -m venv venv
+source venv/bin/activate  # On Windows use: .\venv\Scripts\activate
 pip install -r requirements.txt
 python app.py
+(The Flask app will start on: http://127.0.0.1:5000)
+```
 
-### Frontend
+### 💻 Frontend Setup
 
+```bash
 cd frontend
 pnpm install
 pnpm dev
+(The frontend will start on: http://localhost:5173)
+```
 
 ## 🧠 AI Model Usage
 
-Trained on synthetic and real-world-inspired financial data
+The system integrates custom-trained ML models to analyze and predict financial behavior for Chama members.
 
-Features used:
+### Features Used:
 
-Income
+- Income level
+- Loan repayment history
+- Contribution frequency
+- Historical savings performance
 
-Loan repayment history
+### Models:
 
-Past savings
+- risk_model.joblib → Predicts loan repayment risk
 
-Contribution frequency (encoded)
-
-Models:
-
-risk_model.joblib
-
-savings_model.joblib
+- savings_model.joblib → Forecasts savings potential
 
 ## ✨ Future Improvements
 
-Real-time notifications
+🚀 Real-time notifications via WebSockets
+📱 Integration with mobile money APIs (M-Pesa, Airtel Money)
+🔐 Role-based access control (Admin, Treasurer, Member)
+📊 Enhanced analytics & trend visualization
+🤖 Deeper AI integration for personalized financial advice
 
-Integration with mobile money APIs
+## 🧩 Deployment (Render)
 
-Advanced fraud detection with anomaly detection
+Both backend and frontend are deployed on Render Cloud
 
-Role-based access control
+## 💡 Author
+
+👩‍💻 Dede
+Frontend Developer & Aspiring Full Stack Engineer
+💬 "Empowering communities, one Chama at a time."

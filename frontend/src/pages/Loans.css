@@ -1,0 +1,47 @@
+.loans {
+  padding: 1.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #007b55;
+  margin-bottom: 1rem;
+}
+
+.loan-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.loan-table th,
+.loan-table td {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.loan-table th {
+  background-color: #f8f9fa;
+  color: #444;
+}
+
+.loan-table tr:hover {
+  background-color: #f3f3f3;
+}
+
+.status-approved td {
+  color: green;
+}
+
+.status-pending td {
+  color: orange;
+}
+
+.status-overdue td {
+  color: red;
+}

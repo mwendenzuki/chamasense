@@ -1,0 +1,69 @@
+.reports-page {
+  padding: 2rem;
+  background-color: #f8f9fb;
+  color: #222;
+  font-family: "Inter", sans-serif;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #004d40;
+  margin-bottom: 0.3rem;
+}
+
+.subtitle {
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.report-section {
+  margin-bottom: 2rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.report-section h2 {
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #00695c;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+td:first-child {
+  font-weight: 600;
+  color: #333;
+}
+
+ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+}
+
+.report-footer {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 3rem;
+}
+
+.loading,
+.error {
+  text-align: center;
+  margin-top: 3rem;
+  font-size: 1.1rem;
+}
