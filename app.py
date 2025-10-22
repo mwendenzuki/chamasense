@@ -7,10 +7,23 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 import datetime
+from flask import send_from_directory
+import os
 
 app = Flask(__name__)
 CORS(app)
 
+# === SERVE STATIC FILES === 
+FRONTEND_DIST = os.path.join(os.path.dirname(__file__), "frontend_build")
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve_frontend(path):
+    if path != "" and os.path.exists(os.path.join(FRONTEND_DIST, path)):
+        return send_from_directory(FRONTEND_DIST, path)
+    else:
+        return send_from_directory(FRONTEND_DIST, "index.html")
+        
 # === CONFIG ===
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chamasense.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
