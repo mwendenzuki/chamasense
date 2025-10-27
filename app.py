@@ -13,7 +13,7 @@ load_dotenv()
 
 # === APP SETUP ===
 app = Flask(__name__, static_folder="frontend/dist")
-CORS(app)
+CORS(app, origins=["https://chamasense.onrender.com"])
 
 # === CONFIG ===
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chamasense.db'

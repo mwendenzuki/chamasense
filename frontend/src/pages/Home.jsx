@@ -8,7 +8,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchSummary() {
       try {
-        const response = await fetch("http://127.0.0.1:5000/summary");
+        const response = await fetch("https://chamasense.onrender.com");
         const data = await response.json();
         setSummary(data);
       } catch (error) {

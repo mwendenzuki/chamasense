@@ -1,6 +1,6 @@
 # 🌍 ChamaSense – AI-Powered Group Savings Manager
 
-[🔗 URL – ]()
+[🔗 URL – https://chamasense.onrender.com/ ]()
 
 ---
 
@@ -35,18 +35,18 @@ It simplifies contribution tracking, risk assessment, and financial forecasting 
 
 ## 📂 Folder Structure
 
-chamasense/
-├── backend/
-│ ├── app.py
-│ ├── models/
-│ ├── utils/
-│ ├── risk_model.joblib
-│ └── savings_model.joblib
-├── frontend/
-│ ├── src/
-│ │ ├── pages/
-│ │ ├── components/
-└── README.md
+```bash
+chamasense
+├── app.py
+├── frontend
+├── instance
+├── models
+├── __pycache__
+├── README.md
+├── requirements.txt
+├── utils
+└── venv
+```
 
 ---
 
@@ -91,11 +91,11 @@ The system integrates custom-trained ML models to analyze and predict financial 
 
 ## ✨ Future Improvements
 
-🚀 Real-time notifications via WebSockets
-📱 Integration with mobile money APIs (M-Pesa, Airtel Money)
-🔐 Role-based access control (Admin, Treasurer, Member)
-📊 Enhanced analytics & trend visualization
-🤖 Deeper AI integration for personalized financial advice
+- 🚀 Real-time notifications via WebSockets
+- 📱 Integration with mobile money APIs (M-Pesa, Airtel Money)
+- 🔐 Role-based access control (Admin, Treasurer, Member)
+- 📊 Enhanced analytics & trend visualization
+- 🤖 Deeper AI integration for personalized financial advice
 
 ## 🧩 Deployment (Render)
 
@@ -104,5 +104,6 @@ Both backend and frontend are deployed on Render Cloud
 ## 💡 Author
 
 👩‍💻 Dede
-Frontend Developer & Aspiring Full Stack Engineer
-💬 "Empowering communities, one Chama at a time."
+
+- Frontend Developer & Aspiring Full Stack Engineer
+- 💬 "Empowering communities, one Chama at a time."

@@ -33,7 +33,7 @@ export default function Analytics() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:5000/predict_risk", {
+      const res = await fetch("https://chamasense.onrender.com/predict_risk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(riskData),
@@ -52,11 +52,14 @@ export default function Analytics() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://127.0.0.1:5000/forecast_savings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(savingsData),
-      });
+      const res = await fetch(
+        "https://chamasense.onrender.com/forecast_savings",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(savingsData),
+        }
+      );
       const data = await res.json();
       setSavingsResult(data.predicted_savings_next_month);
     } catch (err) {
