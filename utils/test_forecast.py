@@ -1,6 +1,6 @@
 import requests
 
-url = "http://127.0.0.1:5000/forecast_savings"
+url = "https://chamasense.onrender.com/forecast_savings"
 
 data = {
     "income": 50000,
