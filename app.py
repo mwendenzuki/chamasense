@@ -1,36 +1,24 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-import joblib
+import joblib, os, datetime
 import numpy as np
 import pandas as pd
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-import datetime
-from flask import send_from_directory
-import os
+from flask_jwt_extended import (
+    JWTManager, create_access_token, jwt_required, get_jwt_identity
+)
 
-app = Flask(__name__)
+# === APP SETUP ===
+app = Flask(__name__, static_folder="frontend/dist")
 CORS(app)
 
-# === SERVE STATIC FILES === 
-FRONTEND_DIST = os.path.join(os.path.dirname(__file__), "frontend_build")
-
-@app.route("/", defaults={"path": ""})
-@app.route("/<path:path>")
-def serve_frontend(path):
-    if path != "" and os.path.exists(os.path.join(FRONTEND_DIST, path)):
-        return send_from_directory(FRONTEND_DIST, path)
-    else:
-        return send_from_directory(FRONTEND_DIST, "index.html")
-        
 # === CONFIG ===
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chamasense.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'replace-with-a-secure-random-string'
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=7)
 
-# === INIT DB + JWT ===
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 
@@ -40,20 +28,14 @@ savings_model = joblib.load("models/savings_model.joblib")
 
 # === FEATURE LISTS ===
 RISK_FEATURES = [
-    "income",
-    "loan_repayment_history",
-    "savings_amount",
-    "contribution_frequency_biweekly",
-    "contribution_frequency_monthly",
+    "income", "loan_repayment_history", "savings_amount",
+    "contribution_frequency_biweekly", "contribution_frequency_monthly",
     "contribution_frequency_weekly"
 ]
 
 SAVINGS_FEATURES = [
-    "income",
-    "loan_repayment_history",
-    "past_savings",
-    "contribution_frequency_biweekly",
-    "contribution_frequency_monthly",
+    "income", "loan_repayment_history", "past_savings",
+    "contribution_frequency_biweekly", "contribution_frequency_monthly",
     "contribution_frequency_weekly"
 ]
 
@@ -64,14 +46,13 @@ def encode_frequency(freq):
         "contribution_frequency_weekly": int(freq == "weekly"),
     }
 
-# === DB MODELS: User & Member ===
+# === MODELS ===
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(200), unique=True, nullable=True)
     password_hash = db.Column(db.String(200), nullable=False)
     group_name = db.Column(db.String(200), nullable=True)
-
     members = db.relationship('Member', backref='owner', lazy=True)
 
 class Member(db.Model):
@@ -81,7 +62,7 @@ class Member(db.Model):
     contribution = db.Column(db.Float, default=0)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-# === AUTH ENDPOINTS ===
+# === AUTH ===
 @app.route("/register", methods=["POST"])
 def register():
     data = request.json or {}
@@ -117,7 +98,7 @@ def login():
     access_token = create_access_token(identity=str(user.id))
     return jsonify({"access_token": access_token, "user_id": user.id, "username": user.username})
 
-# === MEMBERS CRUD - protected by JWT ===
+# === MEMBERS CRUD ===
 @app.route("/members", methods=["GET"])
 @jwt_required()
 def list_members():
@@ -165,7 +146,7 @@ def delete_member(member_id):
     db.session.commit()
     return jsonify({"msg": "member deleted"})
 
-# === MORE ENDPOINTS ===
+# === AI MODELS ===
 @app.route("/predict_risk", methods=["POST"])
 def predict_risk():
     data = request.json
@@ -194,14 +175,15 @@ def forecast_savings():
     prediction = savings_model.predict(df)[0]
     return jsonify({"predicted_savings_next_month": round(float(prediction), 2)})
 
-@app.route("/", methods=["GET"])
+# === OTHER ROUTES ===
+@app.route("/api/health", methods=["GET"])
 def health_check():
-    return jsonify({"status": "ChamaSense Flask API is up and running "})
+    return jsonify({"status": "ChamaSense API is up!"})
 
 @app.route("/summary", methods=["GET"])
 def summary():
     data = {
-        "total_members": User.query.count() if User.query.count() else 42,
+        "total_members": User.query.count() or 42,
         "savings_balance": 1200000,
         "pending_loans": 3,
         "last_activity": "Today",
@@ -211,28 +193,24 @@ def summary():
 @app.route("/loans", methods=["GET"])
 def get_loans():
     loans = [
-        {
-            "member_name": "Alice Mwangi",
-            "amount": 50000,
-            "status": "Pending",
-            "due_date": "2025-08-15"
-        },
-        {
-            "member_name": "Brian Otieno",
-            "amount": 75000,
-            "status": "Approved",
-            "due_date": "2025-09-01"
-        },
-        {
-            "member_name": "Cynthia Wambui",
-            "amount": 30000,
-            "status": "Overdue",
-            "due_date": "2025-07-10"
-        }
+        {"member_name": "Alice Mwangi", "amount": 50000, "status": "Pending", "due_date": "2025-08-15"},
+        {"member_name": "Brian Otieno", "amount": 75000, "status": "Approved", "due_date": "2025-09-01"},
+        {"member_name": "Cynthia Wambui", "amount": 30000, "status": "Overdue", "due_date": "2025-07-10"},
     ]
     return jsonify(loans)
 
+# === SERVE FRONTEND ===
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve_frontend(path):
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, "index.html")
+
+# === STARTUP HOOK ===
+with app.app_context():
+    db.create_all()
+
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)
