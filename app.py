@@ -8,6 +8,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import (
     JWTManager, create_access_token, jwt_required, get_jwt_identity
 )
+from dotenv import load_dotenv
+load_dotenv()
 
 # === APP SETUP ===
 app = Flask(__name__, static_folder="frontend/dist")
@@ -16,7 +18,7 @@ CORS(app)
 # === CONFIG ===
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chamasense.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'replace-with-a-secure-random-string'
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'fallback-secret')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=7)
 
 db = SQLAlchemy(app)
