@@ -205,10 +205,27 @@ def get_loans():
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def serve_frontend(path):
+    # Don't intercept valid API routes — let Flask handle them normally
+    api_endpoints = (
+        "register",
+        "login",
+        "members",
+        "summary",
+        "loans",
+        "predict_risk",
+        "forecast_savings"
+    )
+
+    # If it's an API route, return a 404 so Flask's actual route handles it
+    if any(path.startswith(endpoint) for endpoint in api_endpoints):
+        return jsonify({"error": "Invalid direct access to API route"}), 404
+
+    # Serve static files from frontend/dist
     if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, "index.html")
+
+    # Fallback to index.html for React Router
+    return send_from_directory(app.static_folder, "index.html")
 
 # === STARTUP HOOK ===
 with app.app_context():
