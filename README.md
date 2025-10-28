@@ -1,6 +1,6 @@
 # 🌍 ChamaSense – AI-Powered Group Savings Manager
 
-🔗 URL – https://chamasense.onrender.com/
+🔗 URL – https://chamasense.onrender.com
 
 ---
 
