@@ -12,28 +12,25 @@ from flask_jwt_extended import (
 from dotenv import load_dotenv
 load_dotenv()
 
+import africastalking
+
+AT_USERNAME = os.getenv("AT_USERNAME")
+AT_API_KEY = os.getenv("AT_API_KEY")
+
+africastalking.initialize(username=AT_USERNAME, api_key=AT_API_KEY)
+sms = africastalking.SMS
+
 # === APP SETUP ===
 app = Flask(__name__, static_folder="frontend/dist")
 CORS(app, origins=["https://chamasense.onrender.com"])
 
 # === AFRICA'S TALKING SMS SETUP ===
-AT_USERNAME = os.getenv("AT_USERNAME", "sandbox")
-AT_API_KEY = os.getenv("chamasensetempapi123")
-
-africastalking.initialize(username=AT_USERNAME, api_key=AT_API_KEY)
-sms = africastalking.SMS
-
 def send_sms(phone, message):
-    """
-    phone: string like '+254712345678'
-    """
     try:
-        resp = sms.send(message, [phone])
-        app.logger.info(f"SMS sent: {resp}")
-        return True
+        response = sms.send(message, [phone])
+        print("SMS sent:", response)
     except Exception as e:
-        app.logger.error(f"SMS failed: {e}")
-        return False
+        print("SMS ERROR:", e)
 
 # === CONFIG ===
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chamasense.db'
@@ -142,15 +139,18 @@ def add_member():
     db.session.add(member)
     db.session.commit()
 
-    # === SEND SMS NOTIFICATION ===
-    if phone:
-        message = f"Hi {name}, you've been added to the ChamaSense App. ChamaSense is an intelligent web platform for chamas that leverage AI to assess risk and forecast savings, offering insights for informed financial decisions. Welcome to the group!"
-        send_sms(phone, message)
+# --- SMS WELCOME ---
+if member.phone:
+    send_sms(
+        member.phone,
+        f"Hi {member.name}, welcome to ChamaSense! An intelligent web platform for chamas that leverages AI to assess risk and forecast savings, offering insights for informed financial decisions. Thanks for signing up!"
+    )
 
-    return jsonify({
-        "msg": "member added",
-        "member": {"id": member.id, "name": member.name}
-    }), 201
+return jsonify({
+    "msg": "member added",
+    "member": {"id": member.id, "name": member.name}
+}), 201
+
 
 # === SMS API ENDPOINT ===
 @app.route("/send_sms_manual", methods=["POST"])
@@ -177,6 +177,13 @@ def update_member(member_id):
     member.phone = data.get("phone", member.phone)
     member.contribution = float(data.get("contribution", member.contribution))
     db.session.commit()
+
+      # --- SEND CONTRIBUTION ALERT WHEN AMOUNT CHANGES ---
+    if new_amount != old_amount and member.phone:
+        send_sms(
+            member.phone,
+            f"Hi {member.name}, your contribution has been updated to {new_amount} KES. Thank you for growing the chama!"
+        )
     return jsonify({"msg": "member updated"})
 
 @app.route("/members/<int:member_id>", methods=["DELETE"])
