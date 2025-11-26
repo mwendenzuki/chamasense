@@ -3,6 +3,7 @@ from flask_cors import CORS
 import joblib, os, datetime
 import numpy as np
 import pandas as pd
+import africastalking
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import (
@@ -14,6 +15,25 @@ load_dotenv()
 # === APP SETUP ===
 app = Flask(__name__, static_folder="frontend/dist")
 CORS(app, origins=["https://chamasense.onrender.com"])
+
+# === AFRICA'S TALKING SMS SETUP ===
+AT_USERNAME = os.getenv("AT_USERNAME", "sandbox")
+AT_API_KEY = os.getenv("chamasensetempapi123")
+
+africastalking.initialize(username=AT_USERNAME, api_key=AT_API_KEY)
+sms = africastalking.SMS
+
+def send_sms(phone, message):
+    """
+    phone: string like '+254712345678'
+    """
+    try:
+        resp = sms.send(message, [phone])
+        app.logger.info(f"SMS sent: {resp}")
+        return True
+    except Exception as e:
+        app.logger.error(f"SMS failed: {e}")
+        return False
 
 # === CONFIG ===
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chamasense.db'
@@ -121,7 +141,29 @@ def add_member():
     member = Member(name=name, phone=phone, contribution=contribution, user_id=user_id)
     db.session.add(member)
     db.session.commit()
-    return jsonify({"msg": "member added", "member": {"id": member.id, "name": member.name}}), 201
+
+    # === SEND SMS NOTIFICATION ===
+    if phone:
+        message = f"Hi {name}, you've been added to the ChamaSense App. ChamaSense is an intelligent web platform for chamas that leverage AI to assess risk and forecast savings, offering insights for informed financial decisions. Welcome to the group!"
+        send_sms(phone, message)
+
+    return jsonify({
+        "msg": "member added",
+        "member": {"id": member.id, "name": member.name}
+    }), 201
+
+# === SMS API ENDPOINT ===
+@app.route("/send_sms_manual", methods=["POST"])
+@jwt_required()
+def send_sms_manual():
+    data = request.json or {}
+    phone = data.get("phone")
+    msg = data.get("message", "")
+    if not phone or not msg:
+        return jsonify({"msg": "phone & message required"}), 400
+    
+    ok = send_sms(phone, msg)
+    return jsonify({"sent": ok})
 
 @app.route("/members/<int:member_id>", methods=["PUT", "PATCH"])
 @jwt_required()
